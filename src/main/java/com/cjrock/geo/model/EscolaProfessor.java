@@ -15,7 +15,8 @@ public class EscolaProfessor {
     @JoinColumn(name = "tb_escola_id_escola", nullable = false)
     private Escola escola;
 
-    @Column(name = "tb_professor_id_professor", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "tb_professor_id_professor", nullable = false)
     private Professor professor;
 
     @Column(name = "ano_letivo", nullable = false)

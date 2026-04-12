@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "disciplina_alocada_horario")
 public class DisciplinaHorario {
-
+    @Id
     @ManyToOne
     @JoinColumn(name = "id_horario", nullable = false)
     private Horario horario;
