@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "disciplina_alocada_horario")
+@IdClass(DisciplinaHorario.class)
 public class DisciplinaHorario {
     @Id
     @ManyToOne
