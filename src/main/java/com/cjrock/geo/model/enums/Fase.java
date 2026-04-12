@@ -1,4 +1,4 @@
-package com.cjrock.geo.model;
+package com.cjrock.geo.model.enums;
 
 public enum Fase {
     EDUCACAO_INFANTIL("Educação Infantil", "EI"),

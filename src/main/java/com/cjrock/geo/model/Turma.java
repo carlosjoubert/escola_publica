@@ -1,5 +1,7 @@
 package com.cjrock.geo.model;
 
+import com.cjrock.geo.model.enums.Fase;
+import com.cjrock.geo.model.enums.Turno;
 import jakarta.persistence.*;
 
 @Entity

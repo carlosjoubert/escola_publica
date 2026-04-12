@@ -1,4 +1,4 @@
-package com.cjrock.geo.model;
+package com.cjrock.geo.model.enums;
 
 public enum Turno {
     MATUTINO("Matutino", "M"),
