@@ -12,16 +12,17 @@ public class Horario {
     @Column(name = "id_horario", nullable = false)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "dia_semana")
-    private Enum<Dia_semana> dia_semana;
+    private Dia_semana diaSemana;
 
     @Column(name = "num_aula")
-    private  int num_aula;
+    private  Integer numAula;
 
-    public Horario(Long id, Enum<Dia_semana> dia_semana, int num_aula) {
+    public Horario(Long id, Dia_semana diaSemana, Integer numAula) {
         this.id = id;
-        this.dia_semana = dia_semana;
-        this.num_aula = num_aula;
+        this.diaSemana = diaSemana;
+        this.numAula = numAula;
     }
 
     public Horario() {
@@ -35,19 +36,19 @@ public class Horario {
         this.id = id;
     }
 
-    public Enum<Dia_semana> getDia_semana() {
-        return dia_semana;
+    public Dia_semana getDiaSemana() {
+        return diaSemana;
     }
 
-    public void setDia_semana(Enum<Dia_semana> dia_semana) {
-        this.dia_semana = dia_semana;
+    public void setDiaSemana(Dia_semana diaSemana) {
+        this.diaSemana = diaSemana;
     }
 
-    public int getNum_aula() {
-        return num_aula;
+    public Integer getNumAula() {
+        return numAula;
     }
 
-    public void setNum_aula(int num_aula) {
-        this.num_aula = num_aula;
+    public void setNumAula(Integer numAula) {
+        this.numAula = numAula;
     }
 }
