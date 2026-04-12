@@ -21,7 +21,7 @@ public class Turma {
     @Column(name = "fase")
     private Enum<Fase> fase;
 
-    @ManyToMany
+    @OneToMany
     @JoinColumn(name = "id_escola")
     private Escola id_escola;
 
