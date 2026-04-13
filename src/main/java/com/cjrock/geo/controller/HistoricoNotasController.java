@@ -41,19 +41,18 @@ public class HistoricoNotasController {
 
     @PutMapping("/{id}")
     public ResponseEntity<HistoricoNotas> atualizarPorId(@PathVariable Integer id, @RequestBody HistoricoNotas historicoAtualizado) {
-        HistoricoNotas historico = repository.findById(id).orElse(null);
-        if (historico != null) {
+        return repository.findById(id).map(historico -> {
+
             historico.setAluno(historicoAtualizado.getAluno());
             historico.setTurmaDisciplina(historicoAtualizado.getTurmaDisciplina());
-//            historico.setNota1(historicoAtualizado.getNota1());
-//            historico.setNota2(historicoAtualizado.getNota2());
-//            historico.setNota3(historicoAtualizado.getNota3());
-//            historico.setNota4(historicoAtualizado.getNota4());
-            repository.save(historico);
-            return ResponseEntity.ok(historico);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+
+            // CORREÇÃO: Atualiza apenas a nota única e o período correspondente daquele ID
+            historico.setNota(historicoAtualizado.getNota());
+            historico.setTrimestre(historicoAtualizado.getTrimestre());
+            HistoricoNotas historicoSalvo = repository.save(historico);
+            return ResponseEntity.ok(historicoSalvo);
+
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

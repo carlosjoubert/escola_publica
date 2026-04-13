@@ -45,7 +45,6 @@ public class TurmaDisciplinaController {
         if (turmaDisciplina != null) {
             turmaDisciplina.setTurma(turmaDisciplinaAtualizada.getTurma());
             turmaDisciplina.setDisciplina(turmaDisciplinaAtualizada.getDisciplina());
-//            turmaDisciplina.setProfessor(turmaDisciplinaAtualizada.getProfessor());
             repository.save(turmaDisciplina);
             return ResponseEntity.ok(turmaDisciplina);
         } else {
