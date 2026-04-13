@@ -21,4 +21,46 @@ public class HistoricoFrequencia {
 
     @Column(name = "qtd_faltas")
     private Integer qtdFaltas;
+
+    public HistoricoFrequencia(Integer numSQHistoricoFrequencia, Aluno aluno, TurmaDisciplina turmaDisciplina, Integer qtdFaltas) {
+        this.numSQHistoricoFrequencia = numSQHistoricoFrequencia;
+        this.aluno = aluno;
+        this.turmaDisciplina = turmaDisciplina;
+        this.qtdFaltas = qtdFaltas;
+    }
+
+    public HistoricoFrequencia() {
+    }
+
+    public Integer getNumSQHistoricoFrequencia() {
+        return numSQHistoricoFrequencia;
+    }
+
+    public void setNumSQHistoricoFrequencia(Integer numSQHistoricoFrequencia) {
+        this.numSQHistoricoFrequencia = numSQHistoricoFrequencia;
+    }
+
+    public Aluno getAluno() {
+        return aluno;
+    }
+
+    public void setAluno(Aluno aluno) {
+        this.aluno = aluno;
+    }
+
+    public TurmaDisciplina getTurmaDisciplina() {
+        return turmaDisciplina;
+    }
+
+    public void setTurmaDisciplina(TurmaDisciplina turmaDisciplina) {
+        this.turmaDisciplina = turmaDisciplina;
+    }
+
+    public Integer getQtdFaltas() {
+        return qtdFaltas;
+    }
+
+    public void setQtdFaltas(Integer qtdFaltas) {
+        this.qtdFaltas = qtdFaltas;
+    }
 }
