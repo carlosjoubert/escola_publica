@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.HistoricoFrequencia;
 import com.cjrock.geo.repository.HistoricoFrequenciaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,36 +32,30 @@ public class HistoricoFrequenciaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<HistoricoFrequencia> buscarPorId(@PathVariable Integer id) {
-        HistoricoFrequencia historico = repository.findById(id).orElse(null);
-        if (historico != null) {
-            return ResponseEntity.ok(historico);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        HistoricoFrequencia historico = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Histórico de Frequência com ID " + id + " não existe no sistema."));
+        return ResponseEntity.ok(historico);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<HistoricoFrequencia> atualizarPorId(@PathVariable Integer id, @RequestBody HistoricoFrequencia historicoAtualizado) {
-        HistoricoFrequencia historico = repository.findById(id).orElse(null);
-        if (historico != null) {
-            historico.setAluno(historicoAtualizado.getAluno());
-            historico.setTurmaDisciplina(historicoAtualizado.getTurmaDisciplina());
-            historico.setQtdFaltas(historicoAtualizado.getQtdFaltas());
-            repository.save(historico);
-            return ResponseEntity.ok(historico);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        HistoricoFrequencia historico = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Histórico de Frequência com ID " + id + " não existe no sistema."));
+
+        historico.setAluno(historicoAtualizado.getAluno());
+        historico.setTurmaDisciplina(historicoAtualizado.getTurmaDisciplina());
+        historico.setQtdFaltas(historicoAtualizado.getQtdFaltas());
+
+        repository.save(historico);
+        return ResponseEntity.ok(historico);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer id) {
-        HistoricoFrequencia historico = repository.findById(id).orElse(null);
-        if (historico != null) {
-            repository.delete(historico);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        HistoricoFrequencia historico = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Histórico de Frequência com ID " + id + " não existe no sistema."));
+
+        repository.delete(historico);
+        return ResponseEntity.noContent().build();
     }
 }

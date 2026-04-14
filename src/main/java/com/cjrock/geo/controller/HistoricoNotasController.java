@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.HistoricoNotas;
 import com.cjrock.geo.repository.HistoricoNotasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,38 +32,31 @@ public class HistoricoNotasController {
 
     @GetMapping("/{id}")
     public ResponseEntity<HistoricoNotas> buscarPorId(@PathVariable Integer id) {
-        HistoricoNotas historico = repository.findById(id).orElse(null);
-        if (historico != null) {
-            return ResponseEntity.ok(historico);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        HistoricoNotas historico = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Histórico de Notas com ID " + id + " não existe no sistema."));
+        return ResponseEntity.ok(historico);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<HistoricoNotas> atualizarPorId(@PathVariable Integer id, @RequestBody HistoricoNotas historicoAtualizado) {
-        return repository.findById(id).map(historico -> {
+        HistoricoNotas historico = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Histórico de Notas com ID " + id + " não existe no sistema."));
 
-            historico.setAluno(historicoAtualizado.getAluno());
-            historico.setTurmaDisciplina(historicoAtualizado.getTurmaDisciplina());
+        historico.setAluno(historicoAtualizado.getAluno());
+        historico.setTurmaDisciplina(historicoAtualizado.getTurmaDisciplina());
+        historico.setNota(historicoAtualizado.getNota());
+        historico.setTrimestre(historicoAtualizado.getTrimestre());
 
-            // CORREÇÃO: Atualiza apenas a nota única e o período correspondente daquele ID
-            historico.setNota(historicoAtualizado.getNota());
-            historico.setTrimestre(historicoAtualizado.getTrimestre());
-            HistoricoNotas historicoSalvo = repository.save(historico);
-            return ResponseEntity.ok(historicoSalvo);
-
-        }).orElse(ResponseEntity.notFound().build());
+        repository.save(historico);
+        return ResponseEntity.ok(historico);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer id) {
-        HistoricoNotas historico = repository.findById(id).orElse(null);
-        if (historico != null) {
-            repository.delete(historico);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        HistoricoNotas historico = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Histórico de Notas com ID " + id + " não existe no sistema."));
+
+        repository.delete(historico);
+        return ResponseEntity.noContent().build();
     }
 }

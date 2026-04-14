@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.EscolaProfessor;
 import com.cjrock.geo.repository.EscolaProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,35 +32,28 @@ public class EscolaProfessorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EscolaProfessor> buscarPorId(@PathVariable Integer id) {
-        EscolaProfessor escolaProfessor = repository.findById(id).orElse(null);
-        if (escolaProfessor != null) {
-            return ResponseEntity.ok(escolaProfessor);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        EscolaProfessor escolaProfessor = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Vínculo Escola-Professor com ID " + id + " não existe no sistema."));
+        return ResponseEntity.ok(escolaProfessor);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EscolaProfessor> atualizarPorId(@PathVariable Integer id, @RequestBody EscolaProfessor escolaProfessorAtualizado) {
-        EscolaProfessor escolaProfessor = repository.findById(id).orElse(null);
-        if (escolaProfessor != null) {
-            escolaProfessor.setEscola(escolaProfessorAtualizado.getEscola());
-            escolaProfessor.setProfessor(escolaProfessorAtualizado.getProfessor());
-            repository.save(escolaProfessor);
-            return ResponseEntity.ok(escolaProfessor);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        EscolaProfessor escolaProfessor = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Vínculo Escola-Professor com ID " + id + " não existe no sistema."));
+
+        escolaProfessor.setEscola(escolaProfessorAtualizado.getEscola());
+        escolaProfessor.setProfessor(escolaProfessorAtualizado.getProfessor());
+        repository.save(escolaProfessor);
+        return ResponseEntity.ok(escolaProfessor);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer id) {
-        EscolaProfessor escolaProfessor = repository.findById(id).orElse(null);
-        if (escolaProfessor != null) {
-            repository.delete(escolaProfessor);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        EscolaProfessor escolaProfessor = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Vínculo Escola-Professor com ID " + id + " não existe no sistema."));
+
+        repository.delete(escolaProfessor);
+        return ResponseEntity.noContent().build();
     }
 }

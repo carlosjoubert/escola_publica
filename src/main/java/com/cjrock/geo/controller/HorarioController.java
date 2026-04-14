@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.Horario;
 import com.cjrock.geo.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,34 +32,28 @@ public class HorarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Horario> buscarPorId(@PathVariable Long id) {
-        Horario horario = repository.findById(id).orElse(null);
-        if (horario != null) {
-            return ResponseEntity.ok(horario);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Horario horario = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Horário com ID " + id + " não existe no sistema."));
+        return ResponseEntity.ok(horario);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Horario> atualizarPorId(@PathVariable Long id, @RequestBody Horario horarioAtualizado) {
-        Horario horario = repository.findById(id).orElse(null);
-        if (horario != null) {
-            horario.setDiaSemana(horarioAtualizado.getDiaSemana());
-            repository.save(horario);
-            return ResponseEntity.ok(horario);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Horario horario = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Horário com ID " + id + " não existe no sistema."));
+
+        horario.setDiaSemana(horarioAtualizado.getDiaSemana());
+
+        repository.save(horario);
+        return ResponseEntity.ok(horario);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Long id) {
-        Horario horario = repository.findById(id).orElse(null);
-        if (horario != null) {
-            repository.delete(horario);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Horario horario = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Horário com ID " + id + " não existe no sistema."));
+
+        repository.delete(horario);
+        return ResponseEntity.noContent().build();
     }
 }

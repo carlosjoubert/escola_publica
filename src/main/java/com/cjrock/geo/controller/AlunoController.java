@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.Aluno;
 import com.cjrock.geo.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,34 +33,29 @@ public class AlunoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Aluno> buscarPorId(@PathVariable Long id) {
-        Aluno aluno = repository.findById(id).orElse(null);
-        if (aluno != null) {
-            return ResponseEntity.ok(aluno);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Aluno aluno = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno com ID " + id + " não existe no sistema."));
+        return ResponseEntity.ok(aluno);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Aluno> atualizarPorId(@PathVariable Long id, @RequestBody Aluno alunoAtualizado) {
-        Aluno aluno = repository.findById(id).orElse(null);
-        if (aluno != null) {
-            aluno.setNome(alunoAtualizado.getNome());
-            repository.save(aluno);
-            return ResponseEntity.ok(aluno);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Aluno aluno = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno com ID " + id + " não existe no sistema."));
+
+        aluno.setNome(alunoAtualizado.getNome());
+        // Adicione outros campos aqui se o modelo Aluno possuir email/senha/etc como o Professor
+        
+        repository.save(aluno);
+        return ResponseEntity.ok(aluno);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Long id) {
-        Aluno aluno = repository.findById(id).orElse(null);
-        if (aluno != null) {
-            repository.delete(aluno);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Aluno aluno = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno com ID " + id + " não existe no sistema."));
+
+        repository.delete(aluno);
+        return ResponseEntity.noContent().build();
     }
 }

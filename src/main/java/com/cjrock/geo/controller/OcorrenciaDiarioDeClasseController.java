@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.OcorrenciaDiarioDeClasse;
 import com.cjrock.geo.repository.OcorrenciaDiarioDeClasseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,38 +32,32 @@ public class OcorrenciaDiarioDeClasseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OcorrenciaDiarioDeClasse> buscarPorId(@PathVariable Integer id) {
-        OcorrenciaDiarioDeClasse ocorrencia = repository.findById(id).orElse(null);
-        if (ocorrencia != null) {
-            return ResponseEntity.ok(ocorrencia);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        OcorrenciaDiarioDeClasse ocorrencia = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ocorrência com ID " + id + " não existe no sistema."));
+        return ResponseEntity.ok(ocorrencia);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<OcorrenciaDiarioDeClasse> atualizarPorId(@PathVariable Integer id, @RequestBody OcorrenciaDiarioDeClasse ocorrenciaAtualizada) {
-        OcorrenciaDiarioDeClasse ocorrencia = repository.findById(id).orElse(null);
-        if (ocorrencia != null) {
-            ocorrencia.setOcorrencia(ocorrenciaAtualizada.getOcorrencia());
-            ocorrencia.setConteudoPrevisto(ocorrenciaAtualizada.getConteudoPrevisto());
-            ocorrencia.setConteudoRealizado(ocorrenciaAtualizada.getConteudoRealizado());
-            ocorrencia.setTurmaDisciplina(ocorrenciaAtualizada.getTurmaDisciplina());
-            ocorrencia.setDataHora(ocorrenciaAtualizada.getDataHora());
-            repository.save(ocorrencia);
-            return ResponseEntity.ok(ocorrencia);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        OcorrenciaDiarioDeClasse ocorrencia = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ocorrência com ID " + id + " não existe no sistema."));
+
+        ocorrencia.setOcorrencia(ocorrenciaAtualizada.getOcorrencia());
+        ocorrencia.setConteudoPrevisto(ocorrenciaAtualizada.getConteudoPrevisto());
+        ocorrencia.setConteudoRealizado(ocorrenciaAtualizada.getConteudoRealizado());
+        ocorrencia.setTurmaDisciplina(ocorrenciaAtualizada.getTurmaDisciplina());
+        ocorrencia.setDataHora(ocorrenciaAtualizada.getDataHora());
+
+        repository.save(ocorrencia);
+        return ResponseEntity.ok(ocorrencia);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer id) {
-        OcorrenciaDiarioDeClasse ocorrencia = repository.findById(id).orElse(null);
-        if (ocorrencia != null) {
-            repository.delete(ocorrencia);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        OcorrenciaDiarioDeClasse ocorrencia = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ocorrência com ID " + id + " não existe no sistema."));
+
+        repository.delete(ocorrencia);
+        return ResponseEntity.noContent().build();
     }
 }

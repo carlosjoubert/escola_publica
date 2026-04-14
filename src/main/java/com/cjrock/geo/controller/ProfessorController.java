@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.Professor;
 import com.cjrock.geo.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,37 +35,33 @@ public class ProfessorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Professor> buscarPorId(@PathVariable Long id) {
-        Professor professor = repository.findById(id).orElse(null);
-        if (professor != null) {
-            return ResponseEntity.ok(professor);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        // Busca no banco. Se não achar, "joga" o erro que será pego pelo ControllerAdvice
+        Professor professor = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Professor com ID " + id + " não existe no sistema."));
+
+        return ResponseEntity.ok(professor);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Professor> atualizarPorId(@PathVariable Long id, @RequestBody Professor professorAtualizado) {
-        Professor professor = repository.findById(id).orElse(null);
-        if (professor != null) {
-            professor.setNome(professorAtualizado.getNome());
-            professor.setEmail(professorAtualizado.getEmail());
-            professor.setSenha(professorAtualizado.getSenha());
-            repository.save(professor);
-            return ResponseEntity.ok(professor);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Professor professor = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Professor com ID " + id + " não existe no sistema."));
+
+        professor.setNome(professorAtualizado.getNome());
+        professor.setEmail(professorAtualizado.getEmail());
+        professor.setSenha(professorAtualizado.getSenha());
+        
+        repository.save(professor);
+        return ResponseEntity.ok(professor);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Long id) {
-        Professor professor = repository.findById(id).orElse(null);
-        if (professor != null) {
-            repository.delete(professor);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Professor professor = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Professor com ID " + id + " não existe no sistema."));
+
+        repository.delete(professor);
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -1,5 +1,6 @@
 package com.cjrock.geo.controller;
 
+import com.cjrock.geo.exception.RecursoNaoEncontradoException;
 import com.cjrock.geo.model.AlunoEscola;
 import com.cjrock.geo.repository.AlunoEscolaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class AlunoEscolaController {
         AlunoEscola novoAlunoEscola = repository.save(alunoEscola);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoAlunoEscola);
     }
+
     @GetMapping
     public ResponseEntity<List<AlunoEscola>> listarTodos() {
         List<AlunoEscola> alunoEscolas = repository.findAll();
@@ -30,37 +32,31 @@ public class AlunoEscolaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AlunoEscola> buscarPorId(@PathVariable Integer id) {
-        AlunoEscola alunoEscola = repository.findByMatricula(id).orElse(null);
-        if (alunoEscola != null) {
-            return ResponseEntity.ok(alunoEscola);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        AlunoEscola alunoEscola = repository.findByMatricula(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula com ID " + id + " não existe no sistema."));
+        return ResponseEntity.ok(alunoEscola);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AlunoEscola> atualizarPorId(@PathVariable Integer id, @RequestBody AlunoEscola alunoEscolaAtualizado) {
-        AlunoEscola alunoEscola = repository.findByMatricula(id).orElse(null);
-        if (alunoEscola != null) {
-            alunoEscola.setAluno(alunoEscolaAtualizado.getAluno());
-            alunoEscola.setEscola(alunoEscolaAtualizado.getEscola());
-            alunoEscola.setTurno(alunoEscolaAtualizado.getTurno());
-            alunoEscola.setAnoLetivo(alunoEscolaAtualizado.getAnoLetivo());
-            repository.save(alunoEscola);
-            return ResponseEntity.ok(alunoEscola);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        AlunoEscola alunoEscola = repository.findByMatricula(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula com ID " + id + " não existe no sistema."));
+
+        alunoEscola.setAluno(alunoEscolaAtualizado.getAluno());
+        alunoEscola.setEscola(alunoEscolaAtualizado.getEscola());
+        alunoEscola.setTurno(alunoEscolaAtualizado.getTurno());
+        alunoEscola.setAnoLetivo(alunoEscolaAtualizado.getAnoLetivo());
+        
+        repository.save(alunoEscola);
+        return ResponseEntity.ok(alunoEscola);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer id) {
-        AlunoEscola alunoEscola = repository.findByMatricula(id).orElse(null);
-        if (alunoEscola != null) {
-            repository.delete(alunoEscola);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        AlunoEscola alunoEscola = repository.findByMatricula(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula com ID " + id + " não existe no sistema."));
+
+        repository.delete(alunoEscola);
+        return ResponseEntity.noContent().build();
     }
 }
